@@ -10,6 +10,16 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Property
 {
+    const HEAT = [
+        0 => "Électrique",
+        1 => "Gaz"
+    ];
+
+    public function __construct()
+    {
+        $this->created_at = new \DateTime("now", new \DateTimeZone("Europe/Paris"));
+    }
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -73,9 +83,14 @@ class Property
     private $sold;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="text", nullable=true)
      */
     private $description;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $created_at;
 
     public function getId(): ?int
     {
@@ -222,6 +237,18 @@ class Property
     public function setDescription(?string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->created_at;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $created_at): self
+    {
+        $this->created_at = $created_at;
 
         return $this;
     }
