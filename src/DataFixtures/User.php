@@ -20,13 +20,6 @@ class User extends Fixture
 
     public function load(ObjectManager $manager)
     {
-        $user = new \App\Entity\User();
-        $user
-            ->setUsername("test")
-            ->setPassword($this->encoder->encodePassword($user,"test"))
-            ->setRoles(["ROLE_ADMIN"]);
 
-        $manager->persist($user);
-        $manager->flush();
     }
 }

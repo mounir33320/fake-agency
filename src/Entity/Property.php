@@ -169,6 +169,10 @@ class Property
         return $this;
     }
 
+    public function getHeatType(){
+        return self::HEAT[$this->getHeat()];
+    }
+
     public function getHeat(): ?int
     {
         return $this->heat;

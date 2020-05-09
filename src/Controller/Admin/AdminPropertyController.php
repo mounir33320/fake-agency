@@ -63,6 +63,7 @@ class AdminPropertyController extends AbstractController{
             $this->addFlash("success","Le bien a été modifié avec succès");
             return $this->redirectToRoute("admin.index");
         }
+
         return $this->render("admin/edit.html.twig", [
             "form" => $form->createView(),
             "current_page" => "admin"

@@ -1,8 +1,9 @@
-<div class="col-md-3">
+<div class="col-md-3 mb-4">
     <div class="card">
         <div class="card-body">
             <h5 class="card-title"><a href="{{ path('property.show', {id: property.id, slug: property.slug}) }}">{{ property.title }}</a></h5>
             <p class="card-text">{{ property.city }} - {{ property.postalCode }}</p>
+            <p class="card-text">Surface - {{ property.surface }}m²</p>
             <div style="font-size: 2rem;" class="text-primary">{{ property.formatedPrice }} €</div>
         </div>
     </div>
