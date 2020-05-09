@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title "Connexion à l'administration"%}
+
+
+{% block body %}
+    <div class="container">
+        <h1 class="text-center">Connexion</h1>
+        <form method="post">
+            <div class="form-group">
+                <label for="username">Identifiant</label>
+                <input type="text" name="_username" class="form-control" id="username">
+            </div>
+            <div class="form-group">
+                <label for="password">Mot de passe</label>
+                <input type="password" name="_password" class="form-control" id="password">
+            </div>
+            <button class="btn btn-primary" type="submit">Se connecter</button>
+        </form>
+    </div>
+{% endblock %}
+
+

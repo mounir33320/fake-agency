@@ -28,13 +28,21 @@ class AdminPropertyController extends AbstractController{
     }
 
     /**
+     * @Route("/login", name="login")
+     */
+    public function login(){
+        return $this->render("admin/login.html.twig");
+    }
+
+    /**
      * @Route("/admin", name="admin.index")
      * @return Response
      */
     public function index():Response{
         $properties = $this->repository->findAll();
         return $this->render("admin/index.html.twig", [
-            "properties" => $properties
+            "properties" => $properties,
+            "current_page" => "admin"
         ]);
     }
 
@@ -56,7 +64,8 @@ class AdminPropertyController extends AbstractController{
             return $this->redirectToRoute("admin.index");
         }
         return $this->render("admin/edit.html.twig", [
-            "form" => $form->createView()
+            "form" => $form->createView(),
+            "current_page" => "admin"
         ]);
     }
 
@@ -78,9 +87,23 @@ class AdminPropertyController extends AbstractController{
             return $this->redirectToRoute("admin.index");
         }
         return $this->render("admin/new.html.twig", [
-            "form" => $form->createView()
+            "form" => $form->createView(),
+            "current_page" => "admin"
         ]);
     }
 
+    /**
+     * @Route("/admin/delete-{id}", name="property.delete", methods={"DELETE"})
+     */
+    public function delete(Property $property,Request $request, EntityManagerInterface $manager){
+        $propertyId = $property->getId();
+        $token = $request->get("_token");
+        if($this->isCsrfTokenValid("delete-".$propertyId,$token)){
+            $manager->remove($property);
+            $manager->flush();
+            $this->addFlash("success","Le bien a été supprimé avec succès");
+            return $this->redirectToRoute("admin.index");
+        }
+    }
 
 }

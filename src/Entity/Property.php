@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\PropertyRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Cocur\Slugify\Slugify;
 
 /**
  * @ORM\Entity(repositoryClass=PropertyRepository::class)
@@ -97,6 +98,10 @@ class Property
         return $this->id;
     }
 
+    public function getSlug(){
+        return (new Slugify())->slugify($this->title);
+    }
+
     public function getTitle(): ?string
     {
         return $this->title;
@@ -119,6 +124,13 @@ class Property
         $this->surface = $surface;
 
         return $this;
+    }
+
+    /**
+     * @return string|void
+     */
+    public function getFormatedPrice(){
+        return number_format($this->price,0,""," ");
     }
 
     public function getPrice(): ?int

@@ -9,6 +9,14 @@
             <h2 class="text-center">L'agence qui vous obtiendra votre rêve !</h2>
         </div>
     </div>
+
+    <div class="container">
+        <div class="row">
+            {% for property in properties %}
+                {{ include('property/_property.html.twig') }}
+            {% endfor %}
+        </div>
+    </div>
 {% endblock %}
 
 
