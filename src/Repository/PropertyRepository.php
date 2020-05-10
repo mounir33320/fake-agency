@@ -38,15 +38,25 @@ class PropertyRepository extends ServiceEntityRepository
      */
     public function findAllUnsolved(PropertySearch $search):Query{
         $query = $this->findAllUnsolvedQuery();
-            if($search->getMaxPrice() !== null){
-                $query = $query
-                    ->andWhere("p.price < :maxPrice")
-                    ->setParameter(":maxPrice",$search->getMaxPrice());
-            }
+        if($search->getMaxPrice() !== null){
+            $query = $query
+                ->andWhere("p.price < :maxPrice")
+                ->setParameter(":maxPrice",$search->getMaxPrice());
+        }
         if($search->getMinSurface() !== null){
             $query = $query
                 ->andWhere("p.surface > :minSurface")
                 ->setParameter(":minSurface",$search->getMinSurface());
+        }
+
+        if($search->getOptions()->count() > 0){
+            $k = 0;
+            foreach($search->getOptions() as $option){
+                $query = $query
+                    ->andWhere(":option$k MEMBER OF p.options")
+                    ->setParameter(":option$k", $option);
+                $k++;
+            }
         }
 
         return $query->getQuery();

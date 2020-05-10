@@ -3,10 +3,17 @@
 namespace App\Entity;
 
 use App\Repository\PropertyRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Cocur\Slugify\Slugify;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Validator\Constraints as Assert;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
+ * @Vich\Uploadable()
  * @ORM\Entity(repositoryClass=PropertyRepository::class)
  */
 class Property
@@ -19,6 +26,7 @@ class Property
     public function __construct()
     {
         $this->created_at = new \DateTime("now", new \DateTimeZone("Europe/Paris"));
+        $this->options = new ArrayCollection();
     }
 
     /**
@@ -92,6 +100,32 @@ class Property
      * @ORM\Column(type="datetime")
      */
     private $created_at;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Option::class, inversedBy="properties")
+     */
+    private $options;
+
+    /**
+     * @Assert\Image(mimeTypes="image/jpeg")
+     *
+     * @Vich\UploadableField(mapping="properties", fileNameProperty="imageName")
+     *
+     * @var File|null
+     */
+    private $imageFile;
+
+    /**
+     * @ORM\Column(type="string")
+     *
+     * @var string|null
+     */
+    private $imageName;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $updated_at;
 
     public function getId(): ?int
     {
@@ -268,4 +302,85 @@ class Property
 
         return $this;
     }
+
+    /**
+     * @return Collection|Option[]
+     */
+    public function getOptions(): Collection
+    {
+        return $this->options;
+    }
+
+    public function addOption(Option $option): self
+    {
+        if (!$this->options->contains($option)) {
+            $this->options[] = $option;
+            $option->addProperty($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOption(Option $option): self
+    {
+        if ($this->options->contains($option)) {
+            $this->options->removeElement($option);
+            $option->removeProperty($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return File|null
+     */
+    public function getImageFile(): ?File
+    {
+        return $this->imageFile;
+    }
+
+    /**
+     * @param File|null $imageFile
+     * @return Property
+     */
+    public function setImageFile(?File $imageFile): Property
+    {
+        $this->imageFile = $imageFile;
+        if($this->imageFile instanceof UploadedFile){
+            $this->updated_at = new \DateTime("now");
+        }
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getImageName(): ?string
+    {
+        return $this->imageName;
+    }
+
+    /**
+     * @param string|null $imageName
+     * @return Property
+     */
+    public function setImageName(?string $imageName): Property
+    {
+        $this->imageName = $imageName;
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updated_at;
+    }
+
+    public function setUpdatedAt(\DateTimeInterface $updated_at): self
+    {
+        $this->updated_at = $updated_at;
+
+        return $this;
+    }
+
+
 }
